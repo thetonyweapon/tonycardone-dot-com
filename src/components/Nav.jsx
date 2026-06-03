@@ -76,6 +76,7 @@ const Nav = () => {
              target="_blank"
              rel="noopener noreferrer"
              className="p-2 rounded-md hover:bg-accent/10 focus:outline-none focus:ring-2 focus:ring-ring/20 transition-colors"
+             title="In support of my Ukrainian friends and all the people of a free Ukraine. Слава Україні!"
              aria-label="Support Ukraine">
             <svg className="h-5 w-5" viewBox="0 0 40 26">
               <rect width="40" height="13" fill="#005BBB"/>
