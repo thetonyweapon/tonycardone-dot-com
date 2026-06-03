@@ -4,6 +4,7 @@ import Resume from './pages/Resume';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import Photos from './pages/Photos';
+import OverlappingRun from './pages/OverlappingRun';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/photos" element={<Photos />} />
+          <Route path="/overlapping-run" element={<OverlappingRun />} />
         </Routes>
       </div>
     </Router>

@@ -31,7 +31,7 @@ const Nav = () => {
   };
 
   return (
-    <nav className="bg-background/80 backdrop-blur-md border-b border-border/50">
+    <nav className="bg-background/80 backdrop-blur-md border-b border-border/50 relative z-50">
       <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-x-8 px-4 sm:px-6 lg:px-8 py-4">
         <Link to="/" className="flex items-center space-x-3">
           <span className="text-xl font-bold text-foreground">
@@ -47,6 +47,10 @@ const Nav = () => {
           </Link>
           <Link to="/blog" className="text-muted-foreground/80 hover:text-foreground transition-colors font-medium">
             Thoughts
+          </Link>
+          <Link to="/overlapping-run" className="inline-flex items-center gap-1.5 font-medium transition-colors" style={{ color: '#00b140' }}>
+            {'\u26BD'}
+            The Overlapping Run
           </Link>
           <Link to="/photos" className="text-muted-foreground/80 hover:text-foreground transition-colors font-medium">
             Photos
@@ -144,6 +148,12 @@ const Nav = () => {
             <Link to="/blog" onClick={() => setMobileMenuOpen(false)}
                   className="text-muted-foreground/80 hover:text-foreground transition-colors font-medium py-2">
               Thoughts
+            </Link>
+            <Link to="/overlapping-run" onClick={() => setMobileMenuOpen(false)}
+                  className="inline-flex items-center gap-1.5 font-medium py-2 transition-colors"
+                  style={{ color: '#00b140' }}>
+              {'\u26BD'}
+              The Overlapping Run
             </Link>
             <Link to="/photos" onClick={() => setMobileMenuOpen(false)}
                   className="text-muted-foreground/80 hover:text-foreground transition-colors font-medium py-2">
