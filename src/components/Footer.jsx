@@ -7,7 +7,7 @@ const Footer = () => {
         <p className="text-sm text-muted-foreground/60">
           &copy; {year} Tony Cardone
         </p>
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center justify-center flex-wrap gap-x-4 gap-y-1">
           <span className="text-sm text-muted-foreground/60">Find me on</span>
           <a href="https://bsky.app/profile/tonycardone.com"
              target="_blank"
