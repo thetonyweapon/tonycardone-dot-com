@@ -1,4 +1,5 @@
 import Layout from '../components/Layout';
+import SEO from '../components/SEO';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
@@ -79,6 +80,11 @@ const Blog = () => {
 
   return (
     <Layout>
+      <SEO
+        title="Thoughts"
+        description="A collection of thoughts, experiences, and reflections on software engineering, leadership, and life."
+        path="/blog"
+      />
       <div className="min-h-[calc(100vh-4rem)] flex flex-col">
         <div className="w-[80%] mx-auto p-4 lg:p-8 flex-1">
           <div className="flex flex-col items-center py-12">

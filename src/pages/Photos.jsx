@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import Layout from '../components/Layout';
+import SEO from '../components/SEO';
 import photoData from '../data/photos.json';
 
 const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
@@ -47,6 +48,11 @@ const Photos = () => {
 
   return (
     <Layout>
+      <SEO
+        title="Photos"
+        description="A gallery of photos from travels, soccer, and life around Austin, TX."
+        path="/photos"
+      />
       <div className="min-h-[calc(100vh-4rem)] flex flex-col">
         <div className="w-[80%] mx-auto p-4 lg:p-8 flex-1">
           <div className="mb-8 animate-fade-in">

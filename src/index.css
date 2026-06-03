@@ -182,6 +182,14 @@
   --tw-prose-kbd-shadows: hsl(var(--muted));
 }
 
+.prose h1 {
+  font-size: 2.25em;
+}
+
+.prose h2 {
+  font-size: 1.5em;
+}
+
 .prose a {
   color: hsl(var(--primary));
   text-decoration: underline;

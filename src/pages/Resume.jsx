@@ -1,8 +1,14 @@
 import Layout from '../components/Layout';
+import SEO from '../components/SEO';
 
 const Resume = () => {
   return (
     <Layout>
+      <SEO
+        title="Resume"
+        description="Engineering manager and architect with experience leading international teams, designing microservice platforms, and mentoring engineers."
+        path="/resume"
+      />
       <div className="py-12">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
@@ -10,7 +16,7 @@ const Resume = () => {
             <h1 className="text-4xl font-bold text-foreground mb-1">Tony Cardone</h1>
             <p className="text-xl text-muted-foreground/80 mb-2">Software Architect / Engineering Manager</p>
             <p className="text-sm text-muted-foreground/60">
-              tcardone@outlook.com &bull; linkedin.com/in/tonycardone &bull; tonycardone.com
+              tcardone@outlook.com &bull; <a href="https://linkedin.com/in/tonycardone" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">linkedin.com/in/tonycardone</a>
             </p>
           </div>
 

@@ -1,4 +1,5 @@
 import Layout from '../components/Layout';
+import SEO from '../components/SEO';
 import { Link } from 'react-router-dom';
 import downtownAustin from '../assets/downtown_austin.JPG';
 import headshot from '../assets/headshot.jpg';
@@ -6,6 +7,11 @@ import headshot from '../assets/headshot.jpg';
 const Home = () => {
   return (
     <Layout>
+      <SEO
+        title="Home"
+        description="Soccer person, traveler, and a software engineer / architect / manager based in Austin, TX."
+        path="/"
+      />
       <div className="min-h-screen flex flex-col">
         {/* Hero */}
         <div className="relative h-screen max-h-[70vh] min-h-[500px] overflow-hidden">
@@ -26,7 +32,7 @@ const Home = () => {
               Howdy. I'm Tony.
             </h1>
             <p className="text-lg text-white mb-6 animate-fade-in delay-200" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.5)' }}>
-              Soccer person, traveller, and a software engineer / architect / manager depending on who you ask.
+              Soccer person, traveler, and a software engineer / architect / manager depending on who you ask.
             </p>
             <div className="flex justify-center space-x-4 flex-wrap animate-fade-in delay-300">
               <Link to="/resume"

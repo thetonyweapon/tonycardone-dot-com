@@ -1,4 +1,5 @@
 import Layout from '../components/Layout';
+import SEO from '../components/SEO';
 import { Link, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import remarkParse from 'remark-parse';
@@ -122,6 +123,12 @@ const BlogPost = () => {
 
   return (
     <Layout>
+      <SEO
+        title={title}
+        description={`Blog post: ${title}`}
+        path={`/blog/${slug}`}
+        type="article"
+      />
       <div className="min-h-[calc(100vh-4rem)] flex flex-col">
         <div className="w-[80%] mx-auto p-4 lg:p-8 flex-1">
           <div className="flex flex-col items-center py-6">
@@ -135,9 +142,10 @@ const BlogPost = () => {
                 {date}{date && tag && <span> | </span>}{tag}
               </p>
             )}
-            <h1 className="text-3xl font-bold text-foreground mb-6 animate-fade-in">
+            <h1 className="text-4xl sm:text-5xl font-extrabold text-foreground mb-2 animate-fade-in tracking-tight leading-tight">
               {title}
             </h1>
+            <div className="w-16 h-1 bg-primary rounded-full mb-6 animate-fade-in delay-150"></div>
             
             <div 
               className="prose lg:prose-xl dark:prose-invert max-w-none w-[95%]"

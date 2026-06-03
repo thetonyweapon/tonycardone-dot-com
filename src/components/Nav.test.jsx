@@ -34,6 +34,11 @@ describe('Nav', () => {
     expect(linkedin).toBeInTheDocument();
     expect(linkedin).toHaveAttribute('href', 'https://www.linkedin.com/in/tonycardone/');
     expect(linkedin).toHaveAttribute('target', '_blank');
+
+    const ukraine = screen.getByLabelText('Support Ukraine');
+    expect(ukraine).toBeInTheDocument();
+    expect(ukraine).toHaveAttribute('href', 'https://u24.gov.ua/');
+    expect(ukraine).toHaveAttribute('target', '_blank');
   });
 
   it('toggles dark mode on button click', () => {
