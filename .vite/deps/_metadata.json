@@ -1,0 +1,78 @@
+{
+  "hash": "d5ab26f8",
+  "configHash": "f9734f8a",
+  "lockfileHash": "b28ce968",
+  "browserHash": "37b77e78",
+  "optimized": {
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "11f5306e",
+      "needsInterop": true
+    },
+    "react-router-dom": {
+      "src": "../../node_modules/react-router-dom/dist/index.mjs",
+      "file": "react-router-dom.js",
+      "fileHash": "3d7f4b32",
+      "needsInterop": false
+    },
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "0b72a372",
+      "needsInterop": true
+    },
+    "react/jsx-dev-runtime": {
+      "src": "../../node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "a9763c30",
+      "needsInterop": true
+    },
+    "rehype-stringify": {
+      "src": "../../node_modules/rehype-stringify/index.js",
+      "file": "rehype-stringify.js",
+      "fileHash": "d0e1c493",
+      "needsInterop": false
+    },
+    "remark-parse": {
+      "src": "../../node_modules/remark-parse/index.js",
+      "file": "remark-parse.js",
+      "fileHash": "8bc185cd",
+      "needsInterop": false
+    },
+    "remark-rehype": {
+      "src": "../../node_modules/remark-rehype/index.js",
+      "file": "remark-rehype.js",
+      "fileHash": "a2a0fcfe",
+      "needsInterop": false
+    },
+    "unified": {
+      "src": "../../node_modules/unified/index.js",
+      "file": "unified.js",
+      "fileHash": "7296df0c",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-B-1-B7_t": {
+      "file": "chunk-B-1-B7_t.js",
+      "isDynamicEntry": false
+    },
+    "dev-DEJHWWj4": {
+      "file": "dev-DEJHWWj4.js",
+      "isDynamicEntry": false
+    },
+    "development-CdFsGsnU": {
+      "file": "development-CdFsGsnU.js",
+      "isDynamicEntry": false
+    },
+    "lib-BnAnNZk7": {
+      "file": "lib-BnAnNZk7.js",
+      "isDynamicEntry": false
+    },
+    "react-dom-Br2l1Z8p": {
+      "file": "react-dom-Br2l1Z8p.js",
+      "isDynamicEntry": false
+    }
+  }
+}
