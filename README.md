@@ -80,3 +80,26 @@ The resume is authored as `public/Resume.docx` (with `public/Resume.pdf` as a ge
 | `scripts/fetch-resume.mjs` | Parses `public/Resume.docx` into `src/data/resume.json` at build time |
 
 On `npm run dev` and `npm run build`, the resume is parsed automatically. To refresh without a full dev/build cycle, run `npm run update-resume`. The `/resume` sitemap entry's `lastmod` is set from the `Resume.pdf` modification time by `scripts/generate-site.mjs`.
+
+## Deployment
+
+The site is a static React single-page app (SPA) built with Vite and deployed to [GitHub Pages](https://pages.github.com/) under the custom domain `tonycardone.com`.
+
+Deployment is handled by the [`Pages` workflow](.github/workflows/pages.yml), which runs on every push to `main` (and on manual dispatch): it installs deps, runs `npm run build`, and publishes the `dist/` output to the `gh-pages` branch via `actions/deploy-pages`.
+
+SPA routing works on Pages thanks to a generated `dist/404.html` (a copy of `index.html`) emitted by `vite.config.js` — when a path isn't a real file, GitHub serves `404.html` and React Router takes over.
+
+The photo gallery is refreshed from Cloudinary at build time using [these secrets](#cloudinary-secrets). If they are not provided, the build keeps the committed `src/data/photos.json` instead.
+
+### Cloudinary secrets (optional)
+
+Add these repository secrets (Settings → Secrets and variables → Actions) so the gallery can refresh during builds:
+
+| Secret | Purpose |
+|--------|---------|
+| `VITE_CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name (also defaults to `thetonyweapon`) |
+| `CLOUDINARY_API_KEY` | Cloudinary Admin API key |
+| `CLOUDINARY_API_SECRET` | Cloudinary Admin API secret |
+
+If left unset, `fetch-photos.mjs` skips fetching and the build proceeds with the cached `src/data/photos.json`.
+

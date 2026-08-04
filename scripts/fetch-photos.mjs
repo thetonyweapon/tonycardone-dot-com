@@ -17,8 +17,15 @@ const apiSecret = process.env.CLOUDINARY_API_SECRET;
 const cloudName = process.env.VITE_CLOUDINARY_CLOUD_NAME || 'thetonyweapon';
 
 if (!apiKey || !apiSecret) {
-  console.error('Missing CLOUDINARY_API_KEY or CLOUDINARY_API_SECRET in .env.local');
-  process.exit(1);
+  console.warn('Skipping Cloudinary fetch: CLOUDINARY_API_KEY/CLOUDINARY_API_SECRET not set. Keeping existing src/data/photos.json.');
+  const existing = resolve(root, 'src', 'data', 'photos.json');
+  if (existsSync(existing)) {
+    console.log(`Using cached photo manifest → src/data/photos.json`);
+  } else {
+    writeFileSync(existing, JSON.stringify({ photos: [], updatedAt: new Date().toISOString() }, null, 2));
+    console.log('No cached manifest found; wrote empty src/data/photos.json');
+  }
+  process.exit(0);
 }
 
 cloudinary.config({

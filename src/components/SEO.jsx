@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
+import headshot from '../assets/headshot.jpg';
 
 const BASE_URL = 'https://tonycardone.com';
 
 const SEO = ({ title, description, image, path, type }) => {
   const pageTitle = title ? `${title} — Tony Cardone` : 'Tony Cardone';
   const pageDesc = description || 'Soccer person, traveler, and a software engineer / architect / manager based in Austin, TX.';
-  const pageImage = image || '/headshot.jpg';
+  const pageImage = image || headshot;
   const pageUrl = path ? `${BASE_URL}${path}` : BASE_URL;
 
   useEffect(() => {
