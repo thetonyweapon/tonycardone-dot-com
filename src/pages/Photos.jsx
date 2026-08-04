@@ -32,6 +32,7 @@ const Photos = () => {
   const photos = photoData.photos || [];
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [selectedTags, setSelectedTags] = useState([]);
   const lightboxRef = useRef(null);
 
   const folders = useMemo(() => {
@@ -49,13 +50,41 @@ const Photos = () => {
   const activeFolder = folderName ? folders.find((f) => f.name === folderName) : undefined;
   const activePhotos = activeFolder ? activeFolder.photos : [];
 
+  const folderTags = useMemo(() => {
+    const counts = new Map();
+    for (const photo of activePhotos) {
+      for (const tag of photo.tags || []) {
+        counts.set(tag, (counts.get(tag) || 0) + 1);
+      }
+    }
+    return [...counts.entries()]
+      .map(([tag, count]) => ({ tag, count }))
+      .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag));
+  }, [activePhotos]);
+
+  const visiblePhotos = useMemo(
+    () =>
+      selectedTags.length === 0
+        ? activePhotos
+        : activePhotos.filter((p) => selectedTags.every((t) => (p.tags || []).includes(t))),
+    [activePhotos, selectedTags]
+  );
+
+  const toggleTag = useCallback((tag) => {
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+  }, []);
+
+  const clearTags = useCallback(() => setSelectedTags([]), []);
+
   const close = useCallback(() => setSelectedIndex(null), []);
   const prev = useCallback(() => {
-    setSelectedIndex((i) => (i > 0 ? i - 1 : activePhotos.length - 1));
-  }, [activePhotos.length]);
+    setSelectedIndex((i) => (i > 0 ? i - 1 : visiblePhotos.length - 1));
+  }, [visiblePhotos.length]);
   const next = useCallback(() => {
-    setSelectedIndex((i) => (i < activePhotos.length - 1 ? i + 1 : 0));
-  }, [activePhotos.length]);
+    setSelectedIndex((i) => (i < visiblePhotos.length - 1 ? i + 1 : 0));
+  }, [visiblePhotos.length]);
 
   const toggleFullscreen = useCallback(() => {
     const el = lightboxRef.current;
@@ -69,6 +98,7 @@ const Photos = () => {
 
   useEffect(() => {
     setSelectedIndex(null);
+    setSelectedTags([]);
   }, [folderName]);
 
   useEffect(() => {
@@ -136,11 +166,52 @@ const Photos = () => {
               <div className="mb-8">
                 <h1 className="text-3xl font-bold text-foreground mb-2">{stripUnderscores(activeFolder.name)}</h1>
                 <p className="text-muted-foreground/60">
-                  {activePhotos.length} photo{activePhotos.length === 1 ? '' : 's'}
+                  {selectedTags.length > 0
+                    ? `${visiblePhotos.length} of ${activePhotos.length} photo${activePhotos.length === 1 ? '' : 's'}`
+                    : `${activePhotos.length} photo${activePhotos.length === 1 ? '' : 's'}`}
                 </p>
               </div>
-              <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 animate-fade-in delay-200">
-                {activePhotos.map((photo, index) => (
+              {folderTags.length > 0 && (
+                <div className="mb-4 flex flex-wrap gap-2" aria-label="Filter photos by tag">
+                  <button
+                    onClick={clearTags}
+                    aria-pressed={selectedTags.length === 0}
+                    className={`rounded-full px-3 py-1 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                      selectedTags.length === 0
+                        ? 'bg-foreground text-background'
+                        : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                    }`}
+                  >
+                    All
+                  </button>
+                  {folderTags.map(({ tag, count }) => {
+                    const active = selectedTags.includes(tag);
+                    return (
+                      <button
+                        key={tag}
+                        onClick={() => toggleTag(tag)}
+                        aria-pressed={active}
+                        className={`rounded-full px-3 py-1 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                          active
+                            ? 'bg-foreground text-background'
+                            : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                        }`}
+                      >
+                        {tag} ({count})
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+              {visiblePhotos.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-16 animate-fade-in">
+                  <p className="text-muted-foreground/60 max-w-md text-center">
+                    No photos match the selected tags.
+                  </p>
+                </div>
+              ) : (
+                <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 animate-fade-in delay-200">
+                  {visiblePhotos.map((photo, index) => (
                   <figure
                     key={photo.publicId}
                     className="break-inside-avoid mb-4 overflow-hidden rounded-lg border border-border bg-card"
@@ -172,7 +243,8 @@ const Photos = () => {
                     )}
                   </figure>
                 ))}
-              </div>
+                </div>
+              )}
             </div>
           ) : (
             <div className="animate-fade-in">
@@ -215,7 +287,7 @@ const Photos = () => {
       </div>
 
       {selectedIndex !== null && (() => {
-        const photo = activePhotos[selectedIndex];
+        const photo = visiblePhotos[selectedIndex];
         return (
           <div
             ref={lightboxRef}
@@ -290,7 +362,7 @@ const Photos = () => {
             </button>
 
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/60 text-sm">
-              {selectedIndex + 1} / {activePhotos.length}
+              {selectedIndex + 1} / {visiblePhotos.length}
             </div>
 
             {photo.tags && photo.tags.length > 0 && (

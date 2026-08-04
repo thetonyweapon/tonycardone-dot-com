@@ -17,12 +17,14 @@ vi.mock('../data/photos.json', () => ({
 
 const getPhotoButtons = () => {
   const main = screen.getByRole('main');
-  return within(main).getAllByRole('button');
+  return within(main)
+    .getAllByRole('button')
+    .filter((b) => b.querySelector('img'));
 };
 
 const getFolderImages = () => {
   const main = screen.getByRole('main');
-  return within(main).getAllByRole('img');
+  return within(main).queryAllByRole('img');
 };
 
 const setup = (initialEntry = '/photos') => {
@@ -226,5 +228,103 @@ describe('Photos — folder gallery', () => {
 
     await user.click(screen.getByLabelText('Enter fullscreen'));
     expect(mockRequest).toHaveBeenCalled();
+  });
+
+  it('shows a tag filter bar with each tag in the folder', async () => {
+    const user = setup();
+    await openFolder(user, 'Trip1');
+    await screen.findByRole('heading', { name: 'Trip1', level: 1 });
+
+    expect(screen.getByRole('button', { name: 'All' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'austin (1)' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'sunset (1)' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'travel (1)' })).toBeInTheDocument();
+  });
+
+  it('does not show a tag bar when the folder has no tags', async () => {
+    const user = setup();
+    await openFolder(user, 'December 2025 Austin Daytime');
+    await screen.findByRole('heading', { name: 'December 2025 Austin Daytime', level: 1 });
+
+    expect(screen.queryByRole('button', { name: 'All' })).not.toBeInTheDocument();
+    expect(screen.queryByText('austin (1)')).not.toBeInTheDocument();
+  });
+
+  it('filters the grid when a tag chip is clicked', async () => {
+    const user = setup();
+    await openFolder(user, 'Trip1');
+    await screen.findByRole('heading', { name: 'Trip1', level: 1 });
+    expect(getFolderImages().length).toBe(3);
+
+    await user.click(screen.getByRole('button', { name: 'austin (1)' }));
+
+    expect(getFolderImages().length).toBe(1);
+    expect(getFolderImages()[0]).toHaveAttribute('src', expect.stringContaining('Trip1/p1'));
+    expect(screen.getByText('1 of 3 photos')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'austin (1)' })).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('un-toggles a tag chip to restore all photos', async () => {
+    const user = setup();
+    await openFolder(user, 'Trip1');
+    await screen.findByRole('heading', { name: 'Trip1', level: 1 });
+
+    await user.click(screen.getByRole('button', { name: 'austin (1)' }));
+    await user.click(screen.getByRole('button', { name: 'austin (1)' }));
+
+    expect(getFolderImages().length).toBe(3);
+    expect(screen.getByText('3 photos')).toBeInTheDocument();
+  });
+
+  it('ANDs multiple selected tags', async () => {
+    const user = setup();
+    await openFolder(user, 'Trip1');
+    await screen.findByRole('heading', { name: 'Trip1', level: 1 });
+
+    await user.click(screen.getByRole('button', { name: 'sunset (1)' }));
+    await user.click(screen.getByRole('button', { name: 'travel (1)' }));
+
+    expect(getFolderImages().length).toBe(1);
+    expect(getFolderImages()[0]).toHaveAttribute('src', expect.stringContaining('Trip1/p3'));
+    expect(screen.getByText('1 of 3 photos')).toBeInTheDocument();
+  });
+
+  it('shows an empty state when the AND combination matches nothing', async () => {
+    const user = setup();
+    await openFolder(user, 'Trip1');
+    await screen.findByRole('heading', { name: 'Trip1', level: 1 });
+
+    await user.click(screen.getByRole('button', { name: 'austin (1)' }));
+    await user.click(screen.getByRole('button', { name: 'sunset (1)' }));
+
+    expect(screen.getByText('No photos match the selected tags.')).toBeInTheDocument();
+    expect(screen.getByText('0 of 3 photos')).toBeInTheDocument();
+  });
+
+  it('clears all filters via the All chip', async () => {
+    const user = setup();
+    await openFolder(user, 'Trip1');
+    await screen.findByRole('heading', { name: 'Trip1', level: 1 });
+
+    await user.click(screen.getByRole('button', { name: 'austin (1)' }));
+    await user.click(screen.getByRole('button', { name: 'sunset (1)' }));
+    expect(getFolderImages().length).toBe(0);
+
+    await user.click(screen.getByRole('button', { name: 'All' }));
+
+    expect(getFolderImages().length).toBe(3);
+    expect(screen.getByText('3 photos')).toBeInTheDocument();
+  });
+
+  it('keeps lightbox navigation within the filtered set', async () => {
+    const user = setup();
+    await openFolder(user, 'Trip1');
+    await screen.findByRole('heading', { name: 'Trip1', level: 1 });
+
+    await user.click(screen.getByRole('button', { name: 'sunset (1)' }));
+    await user.click(getPhotoButtons()[0]);
+
+    expect(screen.getByLabelText('Photo viewer')).toBeInTheDocument();
+    expect(screen.getByText('1 / 1')).toBeInTheDocument();
   });
 });
