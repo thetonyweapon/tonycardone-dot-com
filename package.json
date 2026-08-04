@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "update-photos": "node scripts/fetch-photos.mjs",
     "update-resume": "node scripts/fetch-resume.mjs",
+    "upload-photos": "node scripts/upload-photos.mjs",
     "test": "vitest",
     "test:run": "vitest run",
     "ci": "vitest run && npm run build"
@@ -22,7 +23,9 @@
     "cloudinary": "^2.10.0",
     "dotenv": "^17.4.2",
     "jsdom": "^29.1.1",
+    "piexifjs": "^1.0.6",
     "postcss": "^8.5.15",
+    "sharp": "^0.35.3",
     "tailwindcss": "^4.3.0",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "~6.0.2",

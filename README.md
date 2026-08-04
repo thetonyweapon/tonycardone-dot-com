@@ -10,6 +10,7 @@ Personal portfolio site built with [React](https://react.dev), [Vite](https://vi
 | `npm run build` | Type-check and build for production |
 | `npm run preview` | Preview production build locally |
 | `npm run update-photos` | Refresh photo data from Cloudinary |
+| `npm run upload-photos` | Resize oversized local photos and upload to Cloudinary (interactive prompts for source folder + Cloudinary folder) |
 | `npm run update-resume` | Re-parse `public/Resume.docx` into `src/data/resume.json` |
 
 ## Setup
@@ -36,6 +37,7 @@ src/
   index.css      Tailwind imports, theme, animations
 scripts/
   fetch-photos.mjs   Fetches image list from Cloudinary Admin API
+  upload-photos.mjs  Resizes oversized local photos and uploads them to Cloudinary
 ```
 
 ## Routes
@@ -67,6 +69,43 @@ export const galleryFolders = [
 ```
 
 On `npm run dev` and `npm run build`, the fetch script runs automatically to pull the latest images from those folders into `src/data/photos.json`. To refresh without a full dev/build cycle, run `npm run update-photos`.
+
+### Upload photos
+
+Resize oversized local photos and upload them to Cloudinary in one step. Credentials are read from `.env.local` (the same `CLOUDINARY_API_KEY` / `CLOUDINARY_API_SECRET` used elsewhere). **Original files on disk are never modified or deleted** — images are resized in memory and uploaded from a buffer.
+
+Run interactively:
+
+```
+npm run upload-photos
+```
+
+You will be prompted for:
+
+1. The local folder containing the photos to upload.
+2. The Cloudinary folder name to upload into (becomes a Cloudinary resource prefix).
+3. Whether to add that folder to `src/data/gallery.config.js` so `/photos` displays the images (default **yes**).
+
+Images that already fit both limits are uploaded unchanged (the image library re-encodes them). Uploads preserve a curated EXIF whitelist — camera make/model, lens, exposure settings (aperture, shutter speed, ISO, focal length, exposure program/metering/white balance), GPS coordinates/altitude/timestamp, capture date, and orientation — plus the embedded ICC color profile. Everything else is stripped: camera body and lens serial numbers, author/artist, copyright, software, captions, keywords, face-tag names, and all IPTC/XMP blocks. Images saved as PNG (sources with transparency) carry no EXIF. Otherwise oversized images are downscaled so the long edge is at most **2560 px** and re-encoded as JPEG (or PNG when the source has transparency), with quality and dimensions reduced as needed until the encoded size is under **10 MB** (within Cloudinary's signed-upload limit). Images that still exceed the limit after shrinking are skipped with a warning, as are files already present in the target Cloudinary folder (matching by name) and files whose names collide within the same batch. After uploading, the photo manifest `src/data/photos.json` is refreshed automatically.
+
+Non-interactive / scriptable usage:
+
+```
+node scripts/upload-photos.mjs --source ./path/to/photos --folder mytrip --register
+```
+
+Options:
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `--source <dir>` | _prompt_ | Local folder of photos to upload |
+| `--folder <name>` | _prompt_ | Cloudinary folder name |
+| `--max-px <n>` | `2560` | Maximum long edge in pixels |
+| `--max-bytes <n>` | `10485760` (10 MB) | Maximum encoded file size per image |
+| `--concurrency <n>` | `4` | Parallel upload workers |
+| `--no-register` | — | Do not add the folder to `gallery.config.js` |
+
+After the run, verify the gallery on the live site at `/photos`.
 
 ## Resume
 
