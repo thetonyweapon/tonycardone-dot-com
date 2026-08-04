@@ -4,12 +4,14 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "node scripts/fetch-photos.mjs && vite",
-    "build": "node scripts/fetch-photos.mjs && vite build && node scripts/generate-site.mjs",
+    "dev": "node scripts/fetch-photos.mjs && node scripts/fetch-resume.mjs && vite",
+    "build": "node scripts/fetch-photos.mjs && node scripts/fetch-resume.mjs && vite build && node scripts/generate-site.mjs",
     "preview": "vite preview",
     "update-photos": "node scripts/fetch-photos.mjs",
+    "update-resume": "node scripts/fetch-resume.mjs",
     "test": "vitest",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "ci": "vitest run && npm run build"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.19",

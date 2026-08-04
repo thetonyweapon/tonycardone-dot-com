@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { readdirSync, readFileSync, writeFileSync, existsSync, mkdirSync, statSync } from 'fs';
 import { resolve } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -12,7 +12,7 @@ const BASE_URL = 'https://tonycardone.com';
 
 const staticPages = [
   { path: '/', changefreq: 'monthly', priority: 1.0 },
-  { path: '/resume', changefreq: 'monthly', priority: 0.8 },
+  { path: '/resume', changefreq: 'monthly', priority: 0.8, lastmodFrom: 'public/Resume.pdf' },
   { path: '/blog', changefreq: 'weekly', priority: 0.9 },
   { path: '/photos', changefreq: 'monthly', priority: 0.6 },
   { path: '/overlapping-run', changefreq: 'weekly', priority: 0.8 },
@@ -76,9 +76,16 @@ function generateSitemap(posts) {
   lines.push('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">');
 
   for (const page of staticPages) {
+    let lastmod = now;
+    if (page.lastmodFrom) {
+      const filePath = resolve(root, page.lastmodFrom);
+      if (existsSync(filePath)) {
+        lastmod = isoDate(statSync(filePath).mtime);
+      }
+    }
     lines.push('  <url>');
     lines.push(`    <loc>${BASE_URL}${page.path}</loc>`);
-    lines.push(`    <lastmod>${now}</lastmod>`);
+    lines.push(`    <lastmod>${lastmod}</lastmod>`);
     lines.push(`    <changefreq>${page.changefreq}</changefreq>`);
     lines.push(`    <priority>${page.priority.toFixed(1)}</priority>`);
     lines.push('  </url>');

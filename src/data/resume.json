@@ -1,0 +1,127 @@
+{
+  "name": "Tony Cardone",
+  "headline": "Software Architect / Engineering Manager",
+  "contact": {
+    "phone": "210-880-4316",
+    "email": "tcardone@outlook.com",
+    "linkedin": "linkedin.com/in/tonycardone",
+    "website": "tonycardone.com"
+  },
+  "summary": "Software Architect and Engineering Manager with 12+ years designing and delivering distributed cloud platforms and leading US, European, and South American engineering teams of up to 15 members. Expertise in system design, AWS, Java, microservices, data platforms, and monolith-to-microservices modernization. Led all aspects of technical execution from product requirements through delivery, operations, and ongoing monitoring.",
+  "experience": [
+    {
+      "company": "Zilliant Incorporated",
+      "location": "Austin, TX",
+      "dates": "June 2015 – November 2025",
+      "roles": [
+        {
+          "title": "Engineering Manager",
+          "dates": "2025",
+          "bullets": [
+            "Led two Eastern European-based teams, totaling 15 developers and QA team members, which included delivery process as well as oversight of day-to-day operations.",
+            "Maintained company-wide architecture oversight, owning system design standards and high-impact technical tradeoffs."
+          ]
+        },
+        {
+          "title": "Senior / Lead Architect",
+          "dates": "2021 - 2025",
+          "bullets": [
+            "Led a seven-member architecture team, which designed product solutions across Zilliant's platform, including highly available APIs and a legacy monolith application. Reported directly to CTO or VP of Engineering.",
+            "Managed and mentored engineers, ensuring long-term vision of individual development was clear, concerns were addressed, and worked with team-level managers to ensure knowledge was being transferred across the organization.",
+            "Led system design of new product offering and subsequent integration of this design into existing platform from requirements to deployment.",
+            "Coordinated with product team during all stages, including during roadmap development to provide clarity on the technical challenges new features may introduce, and supplying tradeoffs for more efficient software delivery.",
+            "Drove design changes that elevated the PostgreSQL variant of Amazon Aurora to the primary data platform, replacing primary use of customer-specific EC2 instances running SQL Server with scalable, more cost-effective alternatives, with reduced maintenance footprint.",
+            "Accelerated adoption of Dropwizard-based Java microservices in place of Java monolith. Strategy primarily focused on isolating components of existing platform, then transferring responsibility to the service layer alongside new functionality. Results included better scalability of individual systems, allowing hundreds of requests per second in each datacenter to flow through efficiently.",
+            "Prioritized usage of worker-based services that assumed responsibility for longer-running tasks, coordinating with product and engineering leadership to invest in tooling and auto-scaling that balanced immediate availability with low standby costs using AWS Batch container model.",
+            "Led backend incident triage and support escalation, reviewing system design and project design with log deep-dives to validate bug reports and propose solutions.",
+            "Engaged with customer solutions teams to identify design issues within their proposed solution in the monolithic application, including mitigation of recurring performance issues."
+          ]
+        },
+        {
+          "title": "Senior Technical Lead",
+          "dates": "2015 - 2021",
+          "bullets": [
+            "Led a ten-person hybrid US-Ukraine team delivering critical backend features for the platform using AWS and Salesforce offerings.",
+            "Accelerated releases from quarterly to daily by owning requirements, architecture, coding, testing, Scrum Master responsibilities, and release management.",
+            "Improved synchronization between Salesforce SObjects and the AWS backend, increasing sync reliability, accelerating troubleshooting, and stabilizing environment staging.",
+            "Integrated AWS Redshift into platform stack, offering a cost-efficient alternative to using SQL Server Enterprise for analytics, with support for variable workloads.",
+            "Deployed AWS EMR solution as part of platform offering, allowing optional use of big data-style inbound data verification and cleanup operations as a standardized model. Clusters were created and destroyed through CloudFormation calls as part of their lifecycle for cost efficiency, resulting in zero standby cluster costs.",
+            "Designed and led Custom Job Workflows with architecture team, uncoupling customer logic from static jobs and achieving near-100% adoption across existing projects while preserving backward compatibility. Supported evolution of unique customer needs within a consistent platform."
+          ]
+        }
+      ],
+      "bullets": []
+    },
+    {
+      "company": "BNSF Railway Company",
+      "location": "Fort Worth, TX",
+      "dates": "June 2013 – June 2015",
+      "roles": [
+        {
+          "title": "Systems Developer",
+          "dates": "",
+          "bullets": [
+            "Software developer on a large distributed agile development team working closely with BNSF's team of mechanical experts to deliver a predictive analytics solution to reduce derailments and increase reliability of rolling stock.",
+            "Team delivered Java applications and data directly to the Network Operations Center for evaluation by human experts on a 24/7/365 basis, utilizing IBM DB2 as the primary datastore and a WebSphere Application Server stack"
+          ]
+        }
+      ],
+      "bullets": []
+    }
+  ],
+  "skills": [
+    {
+      "label": "Cloud and Platforms",
+      "items": [
+        "Amazon Aurora (PostgreSQL-Compatible)",
+        "Amazon Redshift",
+        "Amazon Elastic Container Service (ECS)",
+        "Amazon EC2",
+        "Amazon Simple Workflow Service (SWF)",
+        "AWS Lambda",
+        "AWS Batch",
+        "AWS CloudFormation",
+        "Salesforce Platform"
+      ]
+    },
+    {
+      "label": "Languages",
+      "items": [
+        "Java",
+        "Python",
+        "R",
+        "SQL",
+        "Salesforce Apex"
+      ]
+    },
+    {
+      "label": "Technologies & Tools",
+      "items": [
+        "OpenCode",
+        "OpenAI Codex",
+        "SQL Server",
+        "ELK Stack",
+        "Jira",
+        "Dropwizard",
+        "PostgreSQL",
+        "REST APIs",
+        "Multitenancy",
+        "Docker"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "title": "Master of Science – Data Science",
+      "year": "2026",
+      "detail": "Rawls College of Business, Texas Tech University, Lubbock, TX"
+    },
+    {
+      "title": "Bachelor of Science – Computer Science",
+      "year": "2013",
+      "detail": "Whitacre College of Engineering, Texas Tech University, Lubbock, TX  |  Minor: Mathematics"
+    }
+  ],
+  "other": [],
+  "updatedAt": "2026-08-04T00:52:53.181Z"
+}

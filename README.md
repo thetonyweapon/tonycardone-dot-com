@@ -6,10 +6,11 @@ Personal portfolio site built with [React](https://react.dev), [Vite](https://vi
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Start dev server (auto-fetches photos from Cloudinary) |
+| `npm run dev` | Start dev server (auto-fetches photos from Cloudinary and parses the resume) |
 | `npm run build` | Type-check and build for production |
 | `npm run preview` | Preview production build locally |
 | `npm run update-photos` | Refresh photo data from Cloudinary |
+| `npm run update-resume` | Re-parse `public/Resume.docx` into `src/data/resume.json` |
 
 ## Setup
 
@@ -30,6 +31,7 @@ src/
   assets/        Images, documents
   blogposts/     Markdown blog content
    data/          Gallery config + generated photo manifest (from Cloudinary)
+                  + generated resume data (parsed from public/Resume.docx)
   App.jsx        Routes
   index.css      Tailwind imports, theme, animations
 scripts/
@@ -65,3 +67,16 @@ export const galleryFolders = [
 ```
 
 On `npm run dev` and `npm run build`, the fetch script runs automatically to pull the latest images from those folders into `src/data/photos.json`. To refresh without a full dev/build cycle, run `npm run update-photos`.
+
+## Resume
+
+The resume is authored as `public/Resume.docx` (with `public/Resume.pdf` as a generated download). The `/resume` page renders content parsed from the Word document so the page stays in sync with the source file.
+
+| File | Purpose |
+|------|---------|
+| `public/Resume.docx` | Source resume document (edit this) |
+| `public/Resume.pdf` | Generated PDF download of the same resume |
+| `src/data/resume.json` | Parsed, structured resume data (auto-generated, do not edit) |
+| `scripts/fetch-resume.mjs` | Parses `public/Resume.docx` into `src/data/resume.json` at build time |
+
+On `npm run dev` and `npm run build`, the resume is parsed automatically. To refresh without a full dev/build cycle, run `npm run update-resume`. The `/resume` sitemap entry's `lastmod` is set from the `Resume.pdf` modification time by `scripts/generate-site.mjs`.
