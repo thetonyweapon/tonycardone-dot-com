@@ -1,5 +1,5 @@
 import { readFileSync, writeFileSync, existsSync } from 'fs';
-import { resolve, dirname } from 'path';
+import { resolve, dirname, relative } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { config } from 'dotenv';
 import { v2 as cloudinary } from 'cloudinary';
@@ -16,23 +16,27 @@ const apiKey = process.env.CLOUDINARY_API_KEY;
 const apiSecret = process.env.CLOUDINARY_API_SECRET;
 const cloudName = process.env.VITE_CLOUDINARY_CLOUD_NAME || 'thetonyweapon';
 
-if (!apiKey || !apiSecret) {
-  console.warn('Skipping Cloudinary fetch: CLOUDINARY_API_KEY/CLOUDINARY_API_SECRET not set. Keeping existing src/data/photos.json.');
-  const existing = resolve(root, 'src', 'data', 'photos.json');
-  if (existsSync(existing)) {
-    console.log(`Using cached photo manifest → src/data/photos.json`);
-  } else {
-    writeFileSync(existing, JSON.stringify({ photos: [], updatedAt: new Date().toISOString() }, null, 2));
-    console.log('No cached manifest found; wrote empty src/data/photos.json');
-  }
-  process.exit(0);
-}
+const isCli = process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url;
 
-cloudinary.config({
-  cloud_name: cloudName,
-  api_key: apiKey,
-  api_secret: apiSecret,
-});
+if (isCli) {
+  if (!apiKey || !apiSecret) {
+    console.warn('Skipping Cloudinary fetch: CLOUDINARY_API_KEY/CLOUDINARY_API_SECRET not set. Keeping existing src/data/photos.json.');
+    const existing = resolve(root, 'src', 'data', 'photos.json');
+    if (existsSync(existing)) {
+      console.log(`Using cached photo manifest → src/data/photos.json`);
+    } else {
+      writeFileSync(existing, JSON.stringify({ photos: [], updatedAt: new Date().toISOString() }, null, 2));
+      console.log('No cached manifest found; wrote empty src/data/photos.json');
+    }
+    process.exit(0);
+  }
+
+  cloudinary.config({
+    cloud_name: cloudName,
+    api_key: apiKey,
+    api_secret: apiSecret,
+  });
+}
 
 const galleryConfigPath = resolve(root, 'src', 'data', 'gallery.config.js');
 let folders = [];
@@ -53,6 +57,7 @@ async function fetchFolderImages(folder) {
       type: 'upload',
       prefix,
       max_results: 500,
+      tags: true,
       next_cursor: nextCursor,
     });
     resources = resources.concat(result.resources);
@@ -62,7 +67,7 @@ async function fetchFolderImages(folder) {
   return resources;
 }
 
-async function fetchAllImages() {
+async function fetchAllImages({ outputPath = resolve(root, 'src', 'data', 'photos.json') } = {}) {
   let allResources = [];
 
   if (folders.length === 0) {
@@ -91,14 +96,18 @@ async function fetchAllImages() {
 
   photos.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-  const outPath = resolve(root, 'src', 'data', 'photos.json');
+  const outPath = outputPath;
   writeFileSync(outPath, JSON.stringify({ photos, updatedAt: new Date().toISOString() }, null, 2));
-  console.log(`Fetched ${photos.length} photos → src/data/photos.json`);
+  console.log(`Fetched ${photos.length} photos → ${relative(root, outPath)}`);
 
   return photos;
 }
 
-fetchAllImages().catch((err) => {
-  console.error('Failed to fetch Cloudinary images:', err.message);
-  process.exit(1);
-});
+if (isCli) {
+  fetchAllImages().catch((err) => {
+    console.error('Failed to fetch Cloudinary images:', err.message);
+    process.exit(1);
+  });
+}
+
+export { fetchAllImages, fetchFolderImages };
