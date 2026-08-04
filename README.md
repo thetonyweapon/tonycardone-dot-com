@@ -46,11 +46,12 @@ scripts/
 - `/resume` — Resume with PDF/DOCX download links
 - `/blog` — Blog listing
 - `/blog/:slug` — Individual blog post
-- `/photos` — Photo gallery powered by Cloudinary
+- `/photos` — Photo gallery (folder list) powered by Cloudinary
+- `/photos/:folderName` — Individual photo folder
 
 ## Photos
 
-The photo gallery fetches images from Cloudinary using the Admin API. Only photos inside the folders listed in `src/data/gallery.config.js` are displayed.
+The photo gallery fetches images from Cloudinary using the Admin API. Only photos inside the folders listed in `src/data/gallery.config.js` are displayed. `/photos` starts at the folder level (folder names are shown with underscores stripped), and clicking a folder opens `/photos/:folderName` with its images (tags shown beneath each tagged photo). Photos are ordered newest upload first, so the newest appears top-left and the oldest bottom-right.
 
 | File | Purpose |
 |------|---------|

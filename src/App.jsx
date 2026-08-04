@@ -16,6 +16,7 @@ function App() {
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/photos" element={<Photos />} />
+          <Route path="/photos/:folderName" element={<Photos />} />
           <Route path="/overlapping-run" element={<OverlappingRun />} />
         </Routes>
       </div>
