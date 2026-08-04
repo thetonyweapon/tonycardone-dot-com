@@ -8,7 +8,6 @@ on:
 # Prevent concurrent deployments
 concurrency:
   group: github-pages
-  url: ${{ steps.deployment.outputs.pages_url }}
 
 # Required permissions for deployment to GitHub Pages
 permissions:
