@@ -1,7 +1,8 @@
-import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from 'fs';
-import { resolve, dirname, basename, extname, relative } from 'path';
+import { readFileSync, writeFileSync, unlinkSync, existsSync, readdirSync, statSync } from 'fs';
+import { resolve, dirname, basename, extname, relative, join } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { spawnSync } from 'child_process';
+import { tmpdir } from 'os';
 import { stdin, stdout, exit, env, argv } from 'process';
 import { config } from 'dotenv';
 import { v2 as cloudinary } from 'cloudinary';
@@ -18,6 +19,8 @@ const defaults = {
   maxPx: 2560,
   maxBytes: 10 * 1024 * 1024,
   concurrency: 4,
+  asIs: false,
+  refreshTime: 0,
 };
 
 const KEY_MAP = {
@@ -26,14 +29,16 @@ const KEY_MAP = {
   'max-px': 'maxPx',
   'max-bytes': 'maxBytes',
   concurrency: 'concurrency',
+  'refresh-time': 'refreshTime',
 };
-const NUMERIC_KEYS = new Set(['max-px', 'max-bytes', 'concurrency']);
+const NUMERIC_KEYS = new Set(['max-px', 'max-bytes', 'concurrency', 'refresh-time']);
 
 function parseArgs(args) {
-  const opts = { ...defaults, source: null, folder: null, register: true };
+  const opts = { ...defaults, source: null, folder: null, register: true, asIs: false, refreshTime: 0 };
   for (let i = 2; i < args.length; i++) {
     const a = args[i];
     if (a === '--no-register') { opts.register = false; continue; }
+    if (a === '--as-is') { opts.asIs = true; continue; }
     if (!a.startsWith('--')) continue;
     const hasEq = a.includes('=');
     const [rawKey, inlineVal] = a.replace(/^--/, '').split('=');
@@ -153,36 +158,14 @@ function registerFolder(galleryConfigPath, folder) {
   console.log(`Registered folder '${folder}' in ${relative(root, galleryConfigPath)}.`);
 }
 
-async function processImage(inputPath, { maxPx, maxBytes }) {
-  const meta = await sharp(inputPath).metadata();
-  const { width, height, hasAlpha } = meta;
-  const dimsKnown = Boolean(width && height);
-  const dimsOver = dimsKnown && (width > maxPx || height > maxPx);
-  const rawFile = readFileSync(inputPath);
-
-  const original = await sharp(inputPath).keepIccProfile().toBuffer();
-  if (!dimsOver && original.length <= maxBytes) {
-    const buffer = isJpegFormat(meta.format) ? attachWhitelistedExif(original, rawFile) : original;
-    return {
-      buffer,
-      resized: false,
-      reencoded: false,
-      overLimit: buffer.length > maxBytes,
-      format: meta.format,
-      bytes: buffer.length,
-      width,
-      height,
-    };
-  }
-
-  const fmt = hasAlpha ? 'png' : 'jpeg';
-  let maxSide = dimsOver ? maxPx : (dimsKnown ? Math.max(width, height) : maxPx);
+async function encodeImage(inputBuffer, { width, height, dimsKnown, maxSide, maxBytes, fmt, keepMetadata }) {
   let quality = 85;
   let buffer;
-  let dimsReduced = dimsOver;
-
+  let dimsReduced = dimsKnown && (width > maxSide || height > maxSide);
   for (;;) {
-    let pipeline = sharp(inputPath).keepIccProfile();
+    let pipeline = sharp(inputBuffer);
+    if (keepMetadata) pipeline = pipeline.withMetadata();
+    else pipeline = pipeline.keepIccProfile();
     if (dimsKnown && (width > maxSide || height > maxSide)) {
       pipeline = pipeline.resize({
         width: maxSide,
@@ -204,7 +187,66 @@ async function processImage(inputPath, { maxPx, maxBytes }) {
     dimsReduced = true;
     quality = 85;
   }
+  return { buffer, dimsReduced, overLimit: buffer.length > maxBytes };
+}
 
+async function processImage(inputPath, { maxPx, maxBytes, asIs }) {
+  const rawFile = readFileSync(inputPath);
+  const meta = await sharp(rawFile).metadata();
+  const { width, height, hasAlpha } = meta;
+  const dimsKnown = Boolean(width && height);
+  const dimsOver = dimsKnown && (width > maxPx || height > maxPx);
+
+  if (asIs) {
+    if (!dimsOver && rawFile.length <= maxBytes) {
+      return {
+        buffer: rawFile,
+        resized: false,
+        reencoded: false,
+        overLimit: false,
+        format: meta.format,
+        bytes: rawFile.length,
+        width,
+        height,
+      };
+    }
+    const fmt = hasAlpha ? 'png' : 'jpeg';
+    const maxSide = dimsOver ? maxPx : (dimsKnown ? Math.max(width, height) : maxPx);
+    const { buffer, dimsReduced, overLimit } = await encodeImage(rawFile, {
+      width, height, dimsKnown, maxSide, maxBytes, fmt, keepMetadata: true,
+    });
+    return {
+      buffer,
+      resized: dimsReduced,
+      reencoded: !dimsReduced,
+      overLimit,
+      format: fmt,
+      bytes: buffer.length,
+      width,
+      height,
+    };
+  }
+
+  const original = await sharp(rawFile).keepIccProfile().toBuffer();
+  if (!dimsOver && original.length <= maxBytes) {
+    const buffer = isJpegFormat(meta.format) ? attachWhitelistedExif(original, rawFile) : original;
+    return {
+      buffer,
+      resized: false,
+      reencoded: false,
+      overLimit: buffer.length > maxBytes,
+      format: meta.format,
+      bytes: buffer.length,
+      width,
+      height,
+    };
+  }
+
+  const fmt = hasAlpha ? 'png' : 'jpeg';
+  const maxSide = dimsOver ? maxPx : (dimsKnown ? Math.max(width, height) : maxPx);
+  const { buffer, dimsReduced, overLimit } = await encodeImage(rawFile, {
+    width, height, dimsKnown, maxSide, maxBytes, fmt, keepMetadata: false,
+  });
   const finalBuffer = fmt === 'jpeg' ? attachWhitelistedExif(buffer, rawFile) : buffer;
   return {
     buffer: finalBuffer,
@@ -218,21 +260,19 @@ async function processImage(inputPath, { maxPx, maxBytes }) {
   };
 }
 
-function uploadBuffer(buffer, folder, publicId) {
-  return new Promise((resolveUpload, reject) => {
-    cloudinary.uploader.upload(
-      buffer,
-      {
-        folder,
-        public_id: publicId,
-        resource_type: 'image',
-        invalidate: false,
-      },
-      (error, result) => {
-        if (error) reject(error);
-        else resolveUpload(result);
-      },
-    );
+function uploadBuffer(buffer, folder, publicId, format = 'jpeg') {
+  // cloudinary's v2 upload() expects a filesystem path (it calls fs.createReadStream on
+  // the `file` argument), so a raw Buffer cannot be passed as `file`.
+  const ext = format === 'png' ? 'png' : 'jpeg';
+  const tmpPath = join(tmpdir(), `cloudinary-upload-${process.pid}-${Date.now()}-${sanitizePublicId(publicId)}.${ext}`);
+  writeFileSync(tmpPath, buffer);
+  return cloudinary.uploader.upload(tmpPath, {
+    folder,
+    public_id: publicId,
+    resource_type: 'image',
+    invalidate: false,
+  }).finally(() => {
+    try { unlinkSync(tmpPath); } catch (_) {}
   });
 }
 
@@ -250,12 +290,15 @@ async function pool(items, concurrency, fn) {
   return results;
 }
 
-function refreshPhotos() {
+function refreshPhotos(timeoutMs) {
   const r = spawnSync('node', ['scripts/fetch-photos.mjs'], {
     cwd: root,
     stdio: 'inherit',
+    ...(timeoutMs ? { timeout: timeoutMs } : {}),
   });
-  if (r.status !== 0) {
+  if (r.signal === 'SIGTERM') {
+    console.warn(`Timed out refreshing photos.json after ${timeoutMs}ms. Run \`npm run update-photos\` manually to refresh the /photos gallery.`);
+  } else if (r.status !== 0) {
     console.warn(`Note: refreshing photos.json exited with code ${r.status}. Run \`npm run update-photos\` manually to refresh the /photos gallery.`);
   }
 }
@@ -348,13 +391,14 @@ async function main() {
       const { buffer, resized, reencoded, overLimit, bytes, format } = await processImage(full, {
         maxPx: opts.maxPx,
         maxBytes: opts.maxBytes,
+        asIs: opts.asIs,
       });
       if (overLimit) {
         skippedOverLimit++;
         console.error(`  skip (over limit) ${file} -> ${cloudId} still ${(bytes / (1024 * 1024)).toFixed(1)} MB after shrinking; not uploaded.`);
         return;
       }
-      const result = await uploadBuffer(buffer, opts.folder, publicId);
+      const result = await uploadBuffer(buffer, opts.folder, publicId, format);
       const label = resized ? 'resized' : (reencoded ? 're-encoded' : 'as-is  ');
       console.log(
         `  ${label}  ${file} -> ${result.public_id} (${(bytes / 1024).toFixed(0)} KB, ${format})`,
@@ -371,7 +415,7 @@ async function main() {
     `\nDone: ${uploaded} uploaded (${resizedCount} resized, ${reencodedCount} re-encoded to fit), ${skippedExisting} skipped (already in Cloudinary), ${skippedDuplicateStem} skipped (duplicate names), ${skippedOverLimit} skipped (still over limit).`,
   );
   console.log('Refreshing photo manifest...');
-  refreshPhotos();
+  refreshPhotos(opts.refreshTime);
 }
 
 const isCli = process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url;
@@ -381,4 +425,4 @@ if (isCli) {
     exit(1);
   });
 }
-export { processImage, sanitizePublicId, registerFolder, attachWhitelistedExif, parseArgs as parseUploadArgs, defaults as uploadDefaults };
+export { processImage, uploadBuffer, sanitizePublicId, registerFolder, attachWhitelistedExif, parseArgs as parseUploadArgs, defaults as uploadDefaults };

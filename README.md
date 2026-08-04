@@ -100,10 +100,14 @@ Options:
 |--------|---------|-------------|
 | `--source <dir>` | _prompt_ | Local folder of photos to upload |
 | `--folder <name>` | _prompt_ | Cloudinary folder name |
+| `--as-is` | off | Upload original bytes unchanged when within limits (preserves full EXIF including serials), resizing only when over the size limit while keeping all metadata. Skips the curated EXIF whitelist. |
 | `--max-px <n>` | `2560` | Maximum long edge in pixels |
 | `--max-bytes <n>` | `10485760` (10 MB) | Maximum encoded file size per image |
 | `--concurrency <n>` | `4` | Parallel upload workers |
+| `--refresh-time <ms>` | `0` (no timeout) | Kill the post-upload `update-photos` refresh if it runs longer than this |
 | `--no-register` | — | Do not add the folder to `gallery.config.js` |
+
+By default, resized uploads re-encode to strip embedded metadata and re-attach only a curated EXIF whitelist (camera make/model, lens, exposure settings, GPS, capture date, orientation, ICC). Pass `--as-is` to upload originals byte-for-byte (with their full original metadata) instead.
 
 After the run, verify the gallery on the live site at `/photos`.
 
