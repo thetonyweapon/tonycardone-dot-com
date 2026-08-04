@@ -33,7 +33,7 @@ Overarching all this, however, was the number one reason I was doing a revamp: t
 
 I decided to go with React, powered by [Vite](vite.dev) and [Tailwind CSS](https://tailwindcss.com/). Create React App was probably enough (kind of counteracting my second point of keep it simple), but Vite has some super cool features, like the instant updates that we backend devs get sad about not having. Tailwind spoke to me by not forcing you to do CSS everywhere, which really is like playing whack-a-mole sometimes.
 
-~~his is deployed to Vercel's free tier, through a GitHub repository. The integration with Vercel is pain-free in a way that the Lightsail configuration wasn't.~~ *Updated 8/2026:* This is now running on GitHub Pages. It's closer to the code and doesn't have to deal with Vercel's business whims (not for this site, but others).
+~~ This is deployed to Vercel's free tier, through a GitHub repository. The integration with Vercel is pain-free in a way that the Lightsail configuration wasn't. ~~ *Updated 8/2026:* This is now running on GitHub Pages. It's closer to the code and doesn't have to deal with Vercel's business whims (not for this site, but others).
 
 ## Tool Selections
 
