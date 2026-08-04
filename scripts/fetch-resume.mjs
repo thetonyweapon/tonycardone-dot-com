@@ -95,8 +95,8 @@ function extractParagraphs(buf) {
 function parseContact(line) {
   const contact = {};
   for (const part of line.split('|').map((s) => s.trim()).filter(Boolean)) {
-    if (/^[\d\s()+-]+$/.test(part)) contact.phone = part;
-    else if (part.includes('@')) contact.email = part;
+    if (/^[\d\s()+-]+$/.test(part)) continue; // skip phone numbers (kept only in the source docx/pdf)
+    if (part.includes('@')) contact.email = part;
     else if (/linkedin/i.test(part)) contact.linkedin = part;
     else if (/^[\w.-]+\.[a-z]{2,}$/i.test(part)) contact.website = part;
     else contact.other = (contact.other || []).concat(part);
