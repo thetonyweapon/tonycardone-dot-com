@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import Layout from '../components/Layout';
 import SEO from '../components/SEO';
@@ -8,6 +8,10 @@ const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 
 function cloudinaryUrl(publicId, width) {
   return `https://res.cloudinary.com/${cloudName}/image/upload/f_auto,q_auto,w_${width}/${publicId}`;
+}
+
+function cloudinaryDownloadUrl(publicId) {
+  return `https://res.cloudinary.com/${cloudName}/image/upload/fl_attachment/${publicId}`;
 }
 
 function folderOf(publicId) {
@@ -27,6 +31,8 @@ const Photos = () => {
   const { folderName } = useParams();
   const photos = photoData.photos || [];
   const [selectedIndex, setSelectedIndex] = useState(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const lightboxRef = useRef(null);
 
   const folders = useMemo(() => {
     const groups = new Map();
@@ -51,9 +57,25 @@ const Photos = () => {
     setSelectedIndex((i) => (i < activePhotos.length - 1 ? i + 1 : 0));
   }, [activePhotos.length]);
 
+  const toggleFullscreen = useCallback(() => {
+    const el = lightboxRef.current;
+    if (!el) return;
+    if (!document.fullscreenElement) {
+      el.requestFullscreen?.();
+    } else {
+      document.exitFullscreen?.();
+    }
+  }, []);
+
   useEffect(() => {
     setSelectedIndex(null);
   }, [folderName]);
+
+  useEffect(() => {
+    const handler = () => setIsFullscreen(!!document.fullscreenElement);
+    document.addEventListener('fullscreenchange', handler);
+    return () => document.removeEventListener('fullscreenchange', handler);
+  }, []);
 
   useEffect(() => {
     if (selectedIndex === null) return;
@@ -196,18 +218,47 @@ const Photos = () => {
         const photo = activePhotos[selectedIndex];
         return (
           <div
+            ref={lightboxRef}
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
             onClick={close}
             role="dialog"
             aria-label="Photo viewer"
           >
             <button
+              onClick={(e) => { e.stopPropagation(); toggleFullscreen(); }}
+              className="absolute top-4 right-16 p-2 text-white/70 hover:text-white transition-colors z-10"
+              aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+            >
+              {isFullscreen ? (
+                <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                </svg>
+              ) : (
+                <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                </svg>
+              )}
+            </button>
+
+            <a
+              href={cloudinaryDownloadUrl(photo.publicId)}
+              download
+              onClick={(e) => e.stopPropagation()}
+              className="absolute top-4 left-4 p-2 text-white/70 hover:text-white transition-colors z-10"
+              aria-label="Download photo"
+            >
+              <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+            </a>
+
+            <button
               onClick={(e) => { e.stopPropagation(); prev(); }}
               className="absolute left-4 top-1/2 -translate-y-1/2 p-2 text-white/70 hover:text-white transition-colors z-10"
               aria-label="Previous photo"
             >
               <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
             </button>
 
@@ -241,6 +292,19 @@ const Photos = () => {
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/60 text-sm">
               {selectedIndex + 1} / {activePhotos.length}
             </div>
+
+            {photo.tags && photo.tags.length > 0 && (
+              <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-wrap gap-1.5 justify-center">
+                {photo.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full bg-white/20 px-2.5 py-0.5 text-xs font-medium text-white backdrop-blur-sm"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         );
       })()}

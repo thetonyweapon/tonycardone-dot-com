@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import Photos from './Photos';
@@ -173,5 +173,58 @@ describe('Photos — folder gallery', () => {
     await user.click(screen.getByLabelText('Next photo'));
     await user.click(screen.getByLabelText('Next photo'));
     expect(screen.getByText('1 / 3')).toBeInTheDocument();
+  });
+
+  it('shows a download button in the lightbox', async () => {
+    const user = setup();
+    await openFolder(user, 'Trip1');
+    await screen.findByRole('heading', { name: 'Trip1', level: 1 });
+    await user.click(getPhotoButtons()[0]);
+    expect(screen.getByLabelText('Photo viewer')).toBeInTheDocument();
+
+    const downloadLink = screen.getByLabelText('Download photo');
+    expect(downloadLink).toBeInTheDocument();
+    expect(downloadLink).toHaveAttribute(
+      'href',
+      expect.stringContaining('fl_attachment')
+    );
+    expect(downloadLink).toHaveAttribute(
+      'href',
+      expect.stringContaining('Trip1/p3')
+    );
+  });
+
+  it('shows tags in the lightbox popup', async () => {
+    const user = setup();
+    await openFolder(user, 'Trip1');
+    await screen.findByRole('heading', { name: 'Trip1', level: 1 });
+    await user.click(getPhotoButtons()[0]);
+    expect(screen.getByLabelText('Photo viewer')).toBeInTheDocument();
+
+    expect(screen.getByText('austin')).toBeInTheDocument();
+  });
+
+  it('shows a fullscreen button in the lightbox', async () => {
+    const user = setup();
+    await openFolder(user, 'Trip1');
+    await screen.findByRole('heading', { name: 'Trip1', level: 1 });
+    await user.click(getPhotoButtons()[0]);
+    expect(screen.getByLabelText('Photo viewer')).toBeInTheDocument();
+
+    expect(screen.getByLabelText('Enter fullscreen')).toBeInTheDocument();
+  });
+
+  it('calls requestFullscreen when fullscreen button is clicked', async () => {
+    const user = setup();
+    await openFolder(user, 'Trip1');
+    await screen.findByRole('heading', { name: 'Trip1', level: 1 });
+    await user.click(getPhotoButtons()[0]);
+
+    const mockRequest = vi.fn();
+    const lightbox = screen.getByLabelText('Photo viewer');
+    lightbox.requestFullscreen = mockRequest;
+
+    await user.click(screen.getByLabelText('Enter fullscreen'));
+    expect(mockRequest).toHaveBeenCalled();
   });
 });
