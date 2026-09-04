@@ -114,7 +114,7 @@ After the run, verify the gallery on the live site at `/photos`.
 
 ## Resume
 
-The resume is authored as `public/Resume.docx` (with `public/Resume.pdf` as a generated download). The `/resume` page renders content parsed from the Word document so the page stays in sync with the source file.
+The resume is authored as `public/Resume.docx` (with `public/Resume.pdf` as a generated download). The `/resume` page renders public professional content parsed from the Word document so the page stays in sync with the source file. Contact details remain available only in the downloadable files and are omitted from the website.
 
 | File | Purpose |
 |------|---------|
@@ -146,4 +146,3 @@ Add these repository secrets (Settings → Secrets and variables → Actions) so
 | `CLOUDINARY_API_SECRET` | Cloudinary Admin API secret |
 
 If left unset, `fetch-photos.mjs` skips fetching and the build proceeds with the cached `src/data/photos.json`.
-

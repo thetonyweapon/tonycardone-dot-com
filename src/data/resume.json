@@ -1,12 +1,8 @@
 {
   "name": "Tony Cardone",
-  "headline": "Software Architect / Engineering Manager",
-  "contact": {
-    "email": "tcardone@outlook.com",
-    "linkedin": "linkedin.com/in/tonycardone",
-    "website": "tonycardone.com"
-  },
-  "summary": "Software Architect and Engineering Manager with 12+ years designing and delivering distributed cloud platforms and leading US, European, and South American engineering teams of up to 15 members. Expertise in system design, AWS, Java, microservices, data platforms, and monolith-to-microservices modernization. Led all aspects of technical execution from product requirements through delivery, operations, and ongoing monitoring.",
+  "headline": "Lead Architect / Engineering Manager",
+  "contact": {},
+  "summary": "Software Architect and Engineering Leader with 12+ years designing and evolving distributed cloud platforms and guiding engineering teams across the US, Europe, and South America. Expertise in system architecture, AWS, Java, microservices, data platforms, and monolith-to-microservices modernization. Proven track record of defining technical strategy, driving organization-wide architectural decisions, and partnering with product owners, solutions implementation teams, engineering leaders, and executives to translate business priorities into scalable, reliable technology solutions from concept through production.",
   "experience": [
     {
       "company": "Zilliant Incorporated",
@@ -17,23 +13,23 @@
           "title": "Engineering Manager",
           "dates": "2025",
           "bullets": [
-            "Led two Eastern European-based teams, totaling 15 developers and QA team members, which included delivery process as well as oversight of day-to-day operations.",
-            "Maintained company-wide architecture oversight, owning system design standards and high-impact technical tradeoffs."
+            "Led two distributed Eastern European engineering teams totaling 15 developers and QA professionals, owning technical execution, delivery strategy, operational performance, and cross-team coordination.",
+            "Retained company-wide architecture ownership while serving as Engineering Manager, establishing system-design standards and guiding high-impact architectural and technology tradeoffs across engineering teams."
           ]
         },
         {
-          "title": "Senior / Lead Architect",
+          "title": "Lead Architect / Architecture Manager",
           "dates": "2021 - 2025",
           "bullets": [
-            "Led a seven-member architecture team, which designed product solutions across Zilliant's platform, including highly available APIs and a legacy monolith application. Reported directly to CTO or VP of Engineering.",
-            "Managed and mentored engineers, ensuring long-term vision of individual development was clear, concerns were addressed, and worked with team-level managers to ensure knowledge was being transferred across the organization.",
-            "Led system design of new product offering and subsequent integration of this design into existing platform from requirements to deployment.",
-            "Coordinated with product team during all stages, including during roadmap development to provide clarity on the technical challenges new features may introduce, and supplying tradeoffs for more efficient software delivery.",
-            "Drove design changes that elevated the PostgreSQL variant of Amazon Aurora to the primary data platform, replacing primary use of customer-specific EC2 instances running SQL Server with scalable, more cost-effective alternatives, with reduced maintenance footprint.",
-            "Accelerated adoption of Dropwizard-based Java microservices in place of Java monolith. Strategy primarily focused on isolating components of existing platform, then transferring responsibility to the service layer alongside new functionality. Results included better scalability of individual systems, allowing hundreds of requests per second in each datacenter to flow through efficiently.",
-            "Prioritized usage of worker-based services that assumed responsibility for longer-running tasks, coordinating with product and engineering leadership to invest in tooling and auto-scaling that balanced immediate availability with low standby costs using AWS Batch container model.",
-            "Led backend incident triage and support escalation, reviewing system design and project design with log deep-dives to validate bug reports and propose solutions.",
-            "Engaged with customer solutions teams to identify design issues within their proposed solution in the monolithic application, including mitigation of recurring performance issues."
+            "Led a seven-member architecture organization responsible for solution and platform architecture across Zilliant's product portfolio, including distributed APIs, cloud services, data platforms, and a large legacy monolith; reported directly to the CTO or VP of Engineering.",
+            "Managed and mentored architects and engineers while partnering with engineering managers to develop technical talent, transfer architectural knowledge, and expand architecture practices across the organization.",
+            "Owned end-to-end architecture for a new product offering, defining its system design and integration into the existing platform from initial requirements through production deployment.",
+            "Partnered with product leadership during roadmap development to evaluate technical feasibility, expose architectural risks, and define tradeoffs that balanced product priorities, engineering cost, scalability, and delivery speed.",
+            "Defined and drove the platform data strategy that established Amazon Aurora PostgreSQL as the primary transactional database, replacing customer-specific SQL Server deployments with a more scalable, lower-maintenance, and cost-efficient architecture and the pathway for the transition.",
+            "Led the architectural transition from a Java monolith toward Dropwizard-based microservices, incrementally extracting platform capabilities into independently scalable services supporting hundreds of requests per second per datacenter.",
+            "Established worker-based service patterns for long-running workloads, using AWS Batch and autoscaling to balance workload availability, scalability, and infrastructure cost, and the work needed to translate existing components to this model.",
+            "Led architecture-level incident reviews and escalations for complex backend failures, identifying systemic design issues and guiding corrective solutions across engineering teams.",
+            "Partnered with customer solutions teams to review implementation architectures, identify systemic design and performance risks, and define scalable approaches consistent with the broader platform architecture."
           ]
         },
         {
@@ -41,7 +37,7 @@
           "dates": "2015 - 2021",
           "bullets": [
             "Led a ten-person hybrid US-Ukraine team delivering critical backend features for the platform using AWS and Salesforce offerings.",
-            "Accelerated releases from quarterly to daily by owning requirements, architecture, coding, testing, Scrum Master responsibilities, and release management.",
+            "Transformed the team's release model from quarterly deployments to daily delivery by redesigning engineering practices across requirements, architecture, development, testing, and release management.",
             "Improved synchronization between Salesforce SObjects and the AWS backend, increasing sync reliability, accelerating troubleshooting, and stabilizing environment staging.",
             "Integrated AWS Redshift into platform stack, offering a cost-efficient alternative to using SQL Server Enterprise for analytics, with support for variable workloads.",
             "Deployed AWS EMR solution as part of platform offering, allowing optional use of big data-style inbound data verification and cleanup operations as a standardized model. Clusters were created and destroyed through CloudFormation calls as part of their lifecycle for cost efficiency, resulting in zero standby cluster costs.",
@@ -49,7 +45,9 @@
           ]
         }
       ],
-      "bullets": []
+      "bullets": [
+        "Zilliant is a B2B software company providing cloud-based pricing, revenue optimization, and sales solutions for large enterprise customers."
+      ]
     },
     {
       "company": "BNSF Railway Company",
@@ -60,27 +58,40 @@
           "title": "Systems Developer",
           "dates": "",
           "bullets": [
-            "Software developer on a large distributed agile development team working closely with BNSF's team of mechanical experts to deliver a predictive analytics solution to reduce derailments and increase reliability of rolling stock.",
-            "Team delivered Java applications and data directly to the Network Operations Center for evaluation by human experts on a 24/7/365 basis, utilizing IBM DB2 as the primary datastore and a WebSphere Application Server stack"
+            "Developed Java-based predictive analytics systems with mechanical engineering experts to identify rolling-stock risks, reduce derailments, and improve fleet reliability.",
+            "Delivered Java applications and predictive analytics data to BNSF's Network Operations Center for continuous 24/7/365 operational evaluation, using IBM DB2 and WebSphere."
           ]
         }
       ],
-      "bullets": []
+      "bullets": [
+        "BNSF is one of North America’s largest freight railroads, operating a nationwide transportation network supporting industrial and commercial supply chains."
+      ]
     }
   ],
   "skills": [
     {
-      "label": "Cloud and Platforms",
+      "label": "Architecture & Platforms",
       "items": [
-        "Amazon Aurora (PostgreSQL-Compatible)",
-        "Amazon Redshift",
-        "Amazon Elastic Container Service (ECS)",
-        "Amazon EC2",
-        "Amazon Simple Workflow Service (SWF)",
-        "AWS Lambda",
-        "AWS Batch",
-        "AWS CloudFormation",
-        "Salesforce Platform"
+        "Distributed Systems",
+        "Microservices",
+        "REST APIs",
+        "Event/Worker Architectures",
+        "Multitenancy",
+        "Platform Modernization",
+        "Cloud Architecture"
+      ]
+    },
+    {
+      "label": "Cloud",
+      "items": [
+        "AWS",
+        "ECS",
+        "EC2",
+        "Lambda",
+        "Batch",
+        "Aurora PostgreSQL",
+        "EMR",
+        "CloudFormation"
       ]
     },
     {
@@ -88,24 +99,31 @@
       "items": [
         "Java",
         "Python",
-        "R",
         "SQL",
+        "R",
         "Salesforce Apex"
       ]
     },
     {
-      "label": "Technologies & Tools",
+      "label": "Data & Infrastructure",
       "items": [
-        "OpenCode",
-        "OpenAI Codex",
-        "SQL Server",
-        "ELK Stack",
-        "Jira",
-        "Dropwizard",
         "PostgreSQL",
-        "REST APIs",
-        "Multitenancy",
-        "Docker"
+        "SQL Server",
+        "Redshift",
+        "Docker",
+        "ELK Stack"
+      ]
+    },
+    {
+      "label": "Engineering",
+      "items": [
+        "CI/CD",
+        "Git",
+        "Observability",
+        "Production Operations",
+        "System Design",
+        "OpenAI Codex",
+        "OpenCode. Architecture Reviews"
       ]
     }
   ],
@@ -113,14 +131,14 @@
     {
       "title": "Master of Science – Data Science",
       "year": "2026",
-      "detail": "Rawls College of Business, Texas Tech University, Lubbock, TX"
+      "detail": "Texas Tech University, Lubbock, TX | Rawls College of Business"
     },
     {
       "title": "Bachelor of Science – Computer Science",
       "year": "2013",
-      "detail": "Whitacre College of Engineering, Texas Tech University, Lubbock, TX  |  Minor: Mathematics"
+      "detail": "Texas Tech University, Lubbock, TX  |  Minor: Mathematics | Whitacre College of Engineering"
     }
   ],
   "other": [],
-  "updatedAt": "2026-08-04T00:52:53.181Z"
+  "updatedAt": "2026-09-04T00:19:07.000Z"
 }

@@ -81,10 +81,11 @@ function extractParagraphs(buf) {
     const body = m[1]
       .replace(/<w:br\b[^>]*\/?>/g, ' ')
       .replace(/<w:tab\b[^>]*\/?>/g, ' ');
+    const normalizedBody = body.replaceAll('<w:cr/>', ' ');
     const text = [];
     const tRe = /<w:t(?:\s[^>]*)?>([\s\S]*?)<\/w:t>/g;
     let tm;
-    while ((tm = tRe.exec(body))) {
+    while ((tm = tRe.exec(normalizedBody))) {
       text.push(xmlDecode(tm[1]));
     }
     paragraphs.push(text.join(''));
@@ -93,15 +94,9 @@ function extractParagraphs(buf) {
 }
 
 function parseContact(line) {
-  const contact = {};
-  for (const part of line.split('|').map((s) => s.trim()).filter(Boolean)) {
-    if (/^[\d\s()+-]+$/.test(part)) continue; // skip phone numbers (kept only in the source docx/pdf)
-    if (part.includes('@')) contact.email = part;
-    else if (/linkedin/i.test(part)) contact.linkedin = part;
-    else if (/^[\w.-]+\.[a-z]{2,}$/i.test(part)) contact.website = part;
-    else contact.other = (contact.other || []).concat(part);
-  }
-  return contact;
+  // Contact details stay in the downloadable resume, but are never published
+  // through the site's generated data or rendered page.
+  return {};
 }
 
 function isSectionHeader(line) {
@@ -181,16 +176,19 @@ function parseResume(paragraphs) {
     }
 
     if (section === 'EDUCATION') {
-      if (/^(Master|Bachelor|Doctor|Associate|MBA|BBA|MS|BS|MA|PhD)\b/i.test(line)) {
-        const m = line.match(/^(.+?)\s*\|\s*(.+)$/);
+      const educationLine = line
+        .replace(/TX(?=Rawls|Whitacre)/, 'TX | ')
+        .replace(/Mathematics(?=Whitacre)/, 'Mathematics | ');
+      if (/^(Master|Bachelor|Doctor|Associate|MBA|BBA|MS|BS|MA|PhD)\b/i.test(educationLine)) {
+        const m = educationLine.match(/^(.+?)\s*\|\s*(.+)$/);
         edu = m
           ? { title: m[1].trim(), year: m[2].trim(), detail: '' }
-          : { title: line.trim(), year: '', detail: '' };
+          : { title: educationLine.trim(), year: '', detail: '' };
         data.education.push(edu);
       } else if (edu) {
-        edu.detail = edu.detail ? `${edu.detail} | ${line.trim()}` : line.trim();
+        edu.detail = edu.detail ? `${edu.detail} | ${educationLine.trim()}` : educationLine.trim();
       } else {
-        data.education.push({ title: line.trim(), year: '', detail: '' });
+        data.education.push({ title: educationLine.trim(), year: '', detail: '' });
       }
       continue;
     }
