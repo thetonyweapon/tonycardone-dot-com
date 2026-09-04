@@ -1,7 +1,11 @@
 {
   "name": "Tony Cardone",
   "headline": "Lead Architect / Engineering Manager",
-  "contact": {},
+  "contact": {
+    "email": "tcardone@outlook.com",
+    "linkedin": "linkedin.com/in/tonycardone",
+    "website": "tonycardone.com"
+  },
   "summary": "Software Architect and Engineering Leader with 12+ years designing and evolving distributed cloud platforms and guiding engineering teams across the US, Europe, and South America. Expertise in system architecture, AWS, Java, microservices, data platforms, and monolith-to-microservices modernization. Proven track record of defining technical strategy, driving organization-wide architectural decisions, and partnering with product owners, solutions implementation teams, engineering leaders, and executives to translate business priorities into scalable, reliable technology solutions from concept through production.",
   "experience": [
     {

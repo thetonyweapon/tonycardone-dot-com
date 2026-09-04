@@ -94,9 +94,15 @@ function extractParagraphs(buf) {
 }
 
 function parseContact(line) {
-  // Contact details stay in the downloadable resume, but are never published
-  // through the site's generated data or rendered page.
-  return {};
+  const contact = {};
+  for (const part of line.split('|').map((s) => s.trim()).filter(Boolean)) {
+    if (/^[\d\s()+-]+$/.test(part)) continue; // keep phone numbers out of generated site data
+    if (part.includes('@')) contact.email = part;
+    else if (/linkedin/i.test(part)) contact.linkedin = part;
+    else if (/^[\w.-]+\.[a-z]{2,}$/i.test(part)) contact.website = part;
+    else contact.other = (contact.other || []).concat(part);
+  }
+  return contact;
 }
 
 function isSectionHeader(line) {

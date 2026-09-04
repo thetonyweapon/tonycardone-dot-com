@@ -24,7 +24,14 @@ const SectionHeading = ({ icon, children }) => (
 );
 
 const Resume = () => {
-  const { name, headline, summary, experience, skills, education, other } = resume;
+  const { name, headline, contact, summary, experience, skills, education, other } = resume;
+
+  const contactItems = [];
+  if (contact.email) contactItems.push({ text: contact.email, href: `mailto:${contact.email}` });
+  if (contact.linkedin) {
+    const href = contact.linkedin.startsWith('http') ? contact.linkedin : `https://${contact.linkedin}`;
+    contactItems.push({ text: contact.linkedin, href });
+  }
 
   const seoDescription = summary.length > 160 ? `${summary.slice(0, 157).trimEnd()}...` : summary;
 
@@ -37,6 +44,23 @@ const Resume = () => {
           <div className="text-center mb-6 animate-fade-in">
             <h1 className="text-4xl font-bold text-foreground mb-1">{name}</h1>
             {headline && <p className="text-xl text-muted-foreground/80 mb-2">{headline}</p>}
+            {contactItems.length > 0 && (
+              <p className="text-sm text-muted-foreground/60">
+                {contactItems.map((item, i) => (
+                  <span key={i}>
+                    {i > 0 && <span className="mx-1">•</span>}
+                    <a
+                      href={item.href}
+                      target={item.href.startsWith('mailto') ? undefined : '_blank'}
+                      rel="noopener noreferrer"
+                      className="hover:text-foreground transition-colors"
+                    >
+                      {item.text}
+                    </a>
+                  </span>
+                ))}
+              </p>
+            )}
           </div>
 
           {/* Download links */}

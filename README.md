@@ -114,7 +114,7 @@ After the run, verify the gallery on the live site at `/photos`.
 
 ## Resume
 
-The resume is authored as `public/Resume.docx` (with `public/Resume.pdf` as a generated download). The `/resume` page renders public professional content parsed from the Word document so the page stays in sync with the source file. Contact details remain available only in the downloadable files and are omitted from the website.
+The resume is authored as `public/Resume.docx` (with `public/Resume.pdf` as a generated download). The `/resume` page renders content parsed from the Word document so the page stays in sync with the source file. Phone numbers are omitted from the website, while email and LinkedIn contact links are available on the Resume page.
 
 | File | Purpose |
 |------|---------|
