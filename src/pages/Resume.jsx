@@ -49,18 +49,14 @@ const Resume = () => {
                 {contactItems.map((item, i) => (
                   <span key={i}>
                     {i > 0 && <span className="mx-1">•</span>}
-                    {item.href ? (
-                      <a
-                        href={item.href}
-                        target={item.href.startsWith('mailto') ? undefined : '_blank'}
-                        rel="noopener noreferrer"
-                        className="hover:text-foreground transition-colors"
-                      >
-                        {item.text}
-                      </a>
-                    ) : (
-                      item.text
-                    )}
+                    <a
+                      href={item.href}
+                      target={item.href.startsWith('mailto') ? undefined : '_blank'}
+                      rel="noopener noreferrer"
+                      className="hover:text-foreground transition-colors"
+                    >
+                      {item.text}
+                    </a>
                   </span>
                 ))}
               </p>
